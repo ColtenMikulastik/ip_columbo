@@ -18,7 +18,7 @@ to install python requirements
 
 ## Features / Improvements / Bug-Fixes
 Standard github procedures:
-    - fork library to your own repos
-    - make changes
-    - make PR
-
+1. fork library to your own repos
+2. make changes
+3. make PR
+*DO NOT PUSH PERSONAL API KEYS TO GIT REPO*
