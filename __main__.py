@@ -2,6 +2,10 @@
 import requests
 import json
 
+user_configs = {}
+
+
+
 
 def abuseIPDB_API_Call(ip_address):
     """ uses abuseIPDB_API_Call gets JSON """
