@@ -1,11 +1,9 @@
 {
-	// define with booleans what you want to show for a searched ip
 	"show": 
 	{
-		"ipAdress": true,
+		"ipAddress": false,
 		"isPublic": true,
-		"isPublic": true,
-		"ipVersion": true,
+		"ipVersion": false,
 		"isWhitelisted": true,
 		"abuseConfidenceScore": true,
 		"countryCode": true,
@@ -15,10 +13,9 @@
 		"hostnames": true,
 		"isTor": true,
 		"totalReports": true,
-		"numDistinctUsers": true,
-		"lastReportedAt": true
-	}
-	// define the locations of your api keys
+		"numDistinctUsers": false,
+		"lastReportedAt": false
+	},
 	"api_keys": 
 	{
 		"ipabusedb": "AbuseIPDB_API_Key.key"
