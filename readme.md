@@ -2,6 +2,9 @@
 # ip_columbo
 This program is created to allow security analysts to quickly and effectively search for information on IP addresses.
 
+## Configuring ip_columbo:
+Edit the "user_config.json" file to add or remove output about specific ip's, dont forget to add the path to your api keys.
+
 ## Requirements:
 
 ### APIs

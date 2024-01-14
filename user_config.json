@@ -1,0 +1,26 @@
+{
+	"show": 
+	{
+		"ipAddress": false,
+		"isPublic": true,
+		"ipVersion": false,
+		"isWhitelisted": true,
+		"abuseConfidenceScore": true,
+		"countryCode": true,
+		"usageType": true,
+		"isp": true,
+		"domain": true,
+		"hostnames": true,
+		"isTor": true,
+		"totalReports": true,
+		"numDistinctUsers": false,
+		"lastReportedAt": false
+	},
+	"api_keys": 
+	{
+		"ipabusedb": "AbuseIPDB_API_Key.key"
+	}
+
+
+
+}
