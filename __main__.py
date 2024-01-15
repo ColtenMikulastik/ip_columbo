@@ -2,11 +2,13 @@
 import requests
 import json
 import time
+import socket
 
 
 def load_user_config():
     """ loads user configuration json file into dictionary """
 
+    # gonna let the json error checking take care of itself
     with open("user_config.json", 'r') as conf_file:
         user_configs = json.load(conf_file)
 
@@ -39,11 +41,17 @@ def abuseIPDB_API_Call(ip_address, user_configs):
     # format from byte thing to json dict
     json_resp = json.loads(api_response.content.decode("utf-8"))
 
-    print(user_configs)
-
-    for d_key, value in json_resp["data"].items():
-        if user_configs["show"][d_key]:
-            print(str(d_key) + ": " + str(value))
+    # print the info if request was good
+    if api_response.status_code == 200:
+        # print info from api call
+        # looping through json dictionary, only print user_configs keys
+        for d_key, value in json_resp["data"].items():
+            if user_configs["show"][d_key]:
+                print(str(d_key) + ": " + str(value))
+    else:
+        # print error message
+        print("api call fail")
+        print("abuseipdb api response: " + json_resp["errors"][0]["detail"])
 
 
 def main():
@@ -60,7 +68,13 @@ def main():
     print("===========================")
 
     ip_address = input("ip: ")
-    abuseIPDB_API_Call(ip_address, user_configs)
+    # verify that the inputed data is correct using socket
+    try:
+        socket.inet_aton(ip_address)
+        # continue to API call if ip is valid
+        abuseIPDB_API_Call(ip_address, user_configs)
+    except socket.error:
+        print("non-valid ip address")
 
 
 if __name__ == "__main__":
