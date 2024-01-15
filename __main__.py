@@ -3,6 +3,19 @@ import requests
 import json
 import time
 import socket
+import os
+
+
+def clean():
+    """ clear the screen for all types of computers """
+    # source "codingninjas.com"
+    # For Windows
+    if os.name == 'nt':
+        _ = os.system('cls')
+
+    # For macOS and Linux
+    else:
+        _ = os.system('clear')
 
 
 def load_user_config():
@@ -60,21 +73,28 @@ def main():
     print("loading user configurations...")
     user_configs = load_user_config()
     print("configurations loaded successfully")
-    time.sleep(1)
+    time.sleep(.5)
 
-    # print the splash art
-    print("===========================")
-    print("ip_columbo (the ip checker)")
-    print("===========================")
+    loop_prompt = True
+    while loop_prompt:
+        # print the splash art
+        with open("banner.txt", 'r') as banner:
+            print(banner.read())
 
-    ip_address = input("ip: ")
-    # verify that the inputed data is correct using socket
-    try:
-        socket.inet_aton(ip_address)
-        # continue to API call if ip is valid
-        abuseIPDB_API_Call(ip_address, user_configs)
-    except socket.error:
-        print("non-valid ip address")
+        print("- enter 'q' to quit")
+
+        ip_address = input("ip: ")
+        # verify that the inputed data is correct using socket
+
+        if ip_address == 'q':
+            print("closing program")
+            loop_prompt = False
+        try:
+            socket.inet_aton(ip_address)
+            # continue to API call if ip is valid
+            abuseIPDB_API_Call(ip_address, user_configs)
+        except socket.error:
+            print("non-valid ip address")
 
 
 if __name__ == "__main__":
