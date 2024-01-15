@@ -2,6 +2,7 @@
 import requests
 import json
 import time
+import socket
 
 
 def load_user_config():
@@ -66,9 +67,13 @@ def main():
     print("===========================")
 
     ip_address = input("ip: ")
-    # verify that the inputed data is correct
-
-    abuseIPDB_API_Call(ip_address, user_configs)
+    # verify that the inputed data is correct using socket
+    try:
+        socket.inet_aton(ip_address)
+        # continue to API call if ip is valid
+        abuseIPDB_API_Call(ip_address, user_configs)
+    except socket.error:
+        print("non-valid ip address")
 
 
 if __name__ == "__main__":
