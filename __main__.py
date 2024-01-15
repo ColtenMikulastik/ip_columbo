@@ -8,6 +8,7 @@ import socket
 def load_user_config():
     """ loads user configuration json file into dictionary """
 
+    # gonna let the json error checking take care of itself
     with open("user_config.json", 'r') as conf_file:
         user_configs = json.load(conf_file)
 
