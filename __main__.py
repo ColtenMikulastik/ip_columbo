@@ -39,11 +39,17 @@ def abuseIPDB_API_Call(ip_address, user_configs):
     # format from byte thing to json dict
     json_resp = json.loads(api_response.content.decode("utf-8"))
 
-    print(user_configs)
-
-    for d_key, value in json_resp["data"].items():
-        if user_configs["show"][d_key]:
-            print(str(d_key) + ": " + str(value))
+    # print the info if request was good
+    if api_response.status_code == 200:
+        # print info from api call
+        # looping through json dictionary, only print user_configs keys
+        for d_key, value in json_resp["data"].items():
+            if user_configs["show"][d_key]:
+                print(str(d_key) + ": " + str(value))
+    else:
+        # print error message
+        print("api call fail")
+        print("abuseipdb api response: " + json_resp["errors"][0]["detail"])
 
 
 def main():
@@ -60,6 +66,8 @@ def main():
     print("===========================")
 
     ip_address = input("ip: ")
+    # verify that the inputed data is correct
+
     abuseIPDB_API_Call(ip_address, user_configs)
 
 
