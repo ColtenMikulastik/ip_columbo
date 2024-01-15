@@ -63,9 +63,8 @@ def main():
     time.sleep(1)
 
     # print the splash art
-    print("===========================")
-    print("ip_columbo (the ip checker)")
-    print("===========================")
+    with open("banner.txt", 'r') as banner:
+        print(banner.read())
 
     ip_address = input("ip: ")
     # verify that the inputed data is correct using socket
