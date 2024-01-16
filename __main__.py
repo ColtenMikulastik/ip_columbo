@@ -86,15 +86,17 @@ def main():
         ip_address = input("ip: ")
         # verify that the inputed data is correct using socket
 
-        if ip_address == 'q':
-            print("closing program")
-            loop_prompt = False
         try:
             socket.inet_aton(ip_address)
             # continue to API call if ip is valid
+            print("ip address detected...")
             abuseIPDB_API_Call(ip_address, user_configs)
         except socket.error:
-            print("non-valid ip address")
+            # not ip address, soooo other thing
+            if ip_address == 'q':
+                print("closing program")
+                loop_prompt = False
+                # break
 
 
 if __name__ == "__main__":
