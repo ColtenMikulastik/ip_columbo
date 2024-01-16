@@ -1,9 +1,9 @@
 {
 	"show": 
 	{
-		"ipAddress": false,
+		"ipAddress": true,
 		"isPublic": true,
-		"ipVersion": false,
+		"ipVersion": true,
 		"isWhitelisted": true,
 		"abuseConfidenceScore": true,
 		"countryCode": true,
@@ -13,8 +13,8 @@
 		"hostnames": true,
 		"isTor": true,
 		"totalReports": true,
-		"numDistinctUsers": false,
-		"lastReportedAt": false
+		"numDistinctUsers": true,
+		"lastReportedAt": true
 	},
 	"api_keys": 
 	{
