@@ -28,7 +28,10 @@ def printing_data(json_data, user_configs):
         else:
             print("Not Whitelisted, ", end="")
     if user_configs["show"]["usageType"]:
-        print(json_data["data"]["usageType"] + ", ", end="")
+        if json_data["data"]["usageType"] is None:
+            print("unknown usage type", end="")
+        else:
+            print(json_data["data"]["usageType"] + ", ", end="")
     print()
 
     if user_configs["show"]["abuseConfidenceScore"]:
@@ -47,7 +50,7 @@ def printing_data(json_data, user_configs):
             print(colored('=', color=char_color), end="")
         for i in range(score, 25):
             print(colored(' ', color=char_color), end="")
-        print(colored(']' + zfill_score + '%', color=char_color))
+        print(']' + colored(zfill_score + '%', color=char_color))
 
 
 def clean():
@@ -105,9 +108,6 @@ def abuseIPDB_API_Call(ip_address, user_configs):
         # print error message
         print("api call fail")
         print("abuseipdb api response: " + json_resp["errors"][0]["detail"])
-
-    input("press enter to clear screen:")
-    # clean()
 
 
 def main():
