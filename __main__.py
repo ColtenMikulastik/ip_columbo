@@ -10,6 +10,7 @@ import os
 def printing_data(json_data, user_configs):
     """ print the data from the API request """
 
+    # going to need to be refactored "cyclomatic complexity"
     # print info from api call
     # start by printing ip information
     print("ip information: ", end="")
@@ -29,7 +30,7 @@ def printing_data(json_data, user_configs):
             print("Not Whitelisted, ", end="")
     if user_configs["show"]["usageType"]:
         if json_data["data"]["usageType"] is None:
-            print("unknown usage type", end="")
+            print("Unknown Usage Type", end="")
         else:
             print(json_data["data"]["usageType"] + ", ", end="")
     print()
@@ -51,6 +52,16 @@ def printing_data(json_data, user_configs):
         for i in range(score, 25):
             print(colored(' ', color=char_color), end="")
         print(']' + colored(zfill_score + '%', color=char_color))
+
+    # print information about reports
+    print("report data: ", end="")
+    if user_configs["show"]["totalReports"]:
+        print(str(json_data["data"]["totalReports"]) + " Reports, ", end="")
+    if user_configs["show"]["lastReportedAt"]:
+        print(
+            "last report time:"
+            + str(json_data["data"]["lastReportedAt"]) + ", ", end="")
+    print()
 
 
 def clean():
