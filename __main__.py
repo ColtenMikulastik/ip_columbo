@@ -33,6 +33,13 @@ def printing_data(json_data, user_configs):
             print("Unknown Usage Type", end="")
         else:
             print(json_data["data"]["usageType"] + ", ", end="")
+    if user_configs["show"]["isp"]:
+        print("ISP: " + str(json_data["data"]["isp"]) + ", ", end="")
+    if user_configs["show"]["isTor"]:
+        if json_data["data"]["isTor"]:
+            print("Using Tor, ", end="")
+        else:
+            pass
     print()
 
     if user_configs["show"]["abuseConfidenceScore"]:
