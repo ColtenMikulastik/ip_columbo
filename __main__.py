@@ -1,9 +1,53 @@
 
+from termcolor import colored
 import requests
 import json
 import time
 import socket
 import os
+
+
+def printing_data(json_data, user_configs):
+    """ print the data from the API request """
+
+    # print info from api call
+    # start by printing ip information
+    print("ip information: ", end="")
+    if user_configs["show"]["ipAddress"]:
+        print(json_data["data"]["ipAddress"] + ", ", end="")
+    if user_configs["show"]["isPublic"]:
+        if json_data["data"]["isPublic"]:
+            print("Public, ", end="")
+        else:
+            print("Private, ", end="")
+    if user_configs["show"]["ipVersion"]:
+        print("v" + str(json_data["data"]["ipVersion"]) + ", ", end="")
+    if user_configs["show"]["isWhitelisted"]:
+        if json_data["data"]["isWhitelisted"]:
+            print("Whitelisted, ", end="")
+        else:
+            print("Not Whitelisted, ", end="")
+    if user_configs["show"]["usageType"]:
+        print(json_data["data"]["usageType"] + ", ", end="")
+    print()
+
+    if user_configs["show"]["abuseConfidenceScore"]:
+        # print the abuse certainty graphically
+        # 54 characters wide
+        print("abuse certainty score: ", end="")
+        score = json_data["data"]["abuseConfidenceScore"]
+        if int(score) >= 50:
+            char_color = "red"
+        else:
+            char_color = "green"
+        zfill_score = str(score).zfill(3)
+        score = int(round(score * .25))
+        print('[', end="")
+        for i in range(0, score):
+            print(colored('=', color=char_color), end="")
+        for i in range(score, 25):
+            print(colored(' ', color=char_color), end="")
+        print(colored(']' + zfill_score + '%', color=char_color))
 
 
 def clean():
@@ -56,15 +100,14 @@ def abuseIPDB_API_Call(ip_address, user_configs):
 
     # print the info if request was good
     if api_response.status_code == 200:
-        # print info from api call
-        # looping through json dictionary, only print user_configs keys
-        for d_key, value in json_resp["data"].items():
-            if user_configs["show"][d_key]:
-                print(str(d_key) + ": " + str(value))
+        printing_data(json_resp, user_configs)
     else:
         # print error message
         print("api call fail")
         print("abuseipdb api response: " + json_resp["errors"][0]["detail"])
+
+    input("press enter to clear screen:")
+    # clean()
 
 
 def main():
