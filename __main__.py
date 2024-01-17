@@ -7,12 +7,10 @@ import socket
 import os
 
 
-def printing_data(json_data, user_configs):
-    """ print the data from the API request """
+def print_ip_information(json_data, user_configs):
+    """ prints the ip information from api """
 
-    # going to need to be refactored "cyclomatic complexity"
-    # print info from api call
-    # start by printing ip information
+    # print ip info based on the user configs
     print("ip information: ", end="")
     if user_configs["show"]["ipAddress"]:
         print(json_data["data"]["ipAddress"] + ", ", end="")
@@ -42,6 +40,11 @@ def printing_data(json_data, user_configs):
             pass
     print()
 
+
+def print_abuse_conf_score(json_data, user_configs):
+    """ prints abuse confidence score from api """
+
+    # prints the value as a bar with cool percentage at the end
     if user_configs["show"]["abuseConfidenceScore"]:
         # print the abuse certainty graphically
         # 54 characters wide
@@ -60,7 +63,11 @@ def printing_data(json_data, user_configs):
             print(colored(' ', color=char_color), end="")
         print(']' + colored(zfill_score + '%', color=char_color))
 
-    # print information about reports
+
+def print_report_data(json_data, user_configs):
+    """ prints data about reports from the api """
+
+    # general information about reports
     print("report data: ", end="")
     if user_configs["show"]["totalReports"]:
         print(str(json_data["data"]["totalReports"]) + " Reports, ", end="")
@@ -121,7 +128,10 @@ def abuseIPDB_API_Call(ip_address, user_configs):
 
     # print the info if request was good
     if api_response.status_code == 200:
-        printing_data(json_resp, user_configs)
+        # call the print functions
+        print_ip_information(json_resp, user_configs)
+        print_abuse_conf_score(json_resp, user_configs)
+        print_report_data(json_resp, user_configs)
     else:
         # print error message
         print("api call fail")
