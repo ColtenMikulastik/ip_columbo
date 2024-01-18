@@ -9,7 +9,7 @@ Edit the "user_config.json" file to add or remove output about specific ip's, do
 ## Quick Start Steps
 
 ### Create account on [abusedipdb.com](https://www.abuseipdb.com/) 
-- create an account and copy API key
+- create an account and copy your API key
 
 ### Clone this Repository locally
 ``` git clone https://github.com/ColtenMikulastik/ip_columbo.git ```
@@ -36,10 +36,9 @@ Edit the "user_config.json" file to add or remove output about specific ip's, do
         - ``` pip3 install -r requirements.txt ```
         - or manage the dependencies in your package manager
 
-### 
-    
-
-
+### (Done) Run the program
+- your ready to go!
+    - using ``` ./venv/bin/python3 . ``` or using your IDE start the program
 
 
 ## Requirements:
