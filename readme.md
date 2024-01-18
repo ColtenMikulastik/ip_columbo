@@ -57,5 +57,6 @@ ip_columbo is heavily relyant on API keys to these websites.
 ***DO NOT PUSH PERSONAL API KEYS TO GIT REPO***
 #### Standard github procedures:
 1. fork library to your own repos
-2. make changes
-3. make PR
+2. make branch for your code
+3. make changes
+3. make PR to my repo on your changes branch
