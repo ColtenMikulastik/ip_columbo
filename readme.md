@@ -20,7 +20,25 @@ Edit the "user_config.json" file to add or remove output about specific ip's, do
 ### Edit User Confiurations
 - make edits in the "user_config.json" file,
     - "show" defines what will be shown when you search an ip
-    - "api_keys" defines where each specific api key is locally
+        - edit these with "*true*" or "*false*" depending.
+    - "api_keys" defines where each key is in your local files
+        - edit thes to point to the correct file:
+            - ex: ``` "ipabusedb": "myapikey.key" ```
+
+### Run the Requirements script
+- depending on your environment:
+    1. you might have to create a virtual environment using:
+        - ``` python3 -m venv ./venv ```
+        - and then using your virtual environment to install the requirements:
+        - ``` ./venv/bin/pip3 install -r requirements.txt ```
+    
+    2. or you might already be in a virtual environment where you might have to run:
+        - ``` pip3 install -r requirements.txt ```
+        - or manage the dependencies in your package manager
+
+### 
+    
+
 
 
 
