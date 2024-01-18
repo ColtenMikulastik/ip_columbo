@@ -26,3 +26,4 @@ ip_columbo is heavily relyant on API keys to these websites.
 1. fork library to your own repos
 2. make changes
 3. make PR
+test
