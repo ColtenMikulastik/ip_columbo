@@ -138,6 +138,16 @@ def abuseIPDB_API_Call(ip_address, user_configs):
         print("abuseipdb api response: " + json_resp["errors"][0]["detail"])
 
 
+def ip_geo_api_call(ip_address, user_configs):
+    """ uses IP-API.com to get geolocation info about ip address """
+
+    api_response = requests.get("http://ip-api.com/json/" + str(ip_address))
+    json_resp = json.loads(api_response.content.decode("utf-8"))
+
+    for key, value in json_resp.items():
+        print(str(key) + ": " + str(value))
+
+
 def main():
     """ gets user input and calls all the other functions """
 
@@ -162,6 +172,7 @@ def main():
             # continue to API call if ip is valid
             print("ip address detected...")
             abuseIPDB_API_Call(ip_address, user_configs)
+            ip_geo_api_call(ip_address, user_configs)
         except socket.error:
             # not ip address, soooo other thing
             if ip_address == 'q':
