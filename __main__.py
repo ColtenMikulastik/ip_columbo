@@ -9,7 +9,6 @@ import os
 
 def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """
-    print("Test")
     for key, value in json_data.items():
         if user_configs["show"]["ipgeoloc"][key]:
             print(str(key) + ": " + str(value))
@@ -154,10 +153,10 @@ def ip_geo_api_call(ip_address, user_configs):
     json_resp = json.loads(api_response.content.decode("utf-8"))
 
     if json_resp["status"] == "success":
-        print("abuseipdb api results:")
+        print("geolocation api results:")
         print_geolocation_info(json_resp, user_configs)
     else:
-        print("api call failure.")
+        print("geolocaltion api call failure.")
 
 
 def main():

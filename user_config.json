@@ -24,7 +24,7 @@
 			"status": false,
 			"country": true,
 			"countryCode": false,
-			"region": true,
+			"region": false,
 			"regionName": true,
 			"city": true,
 			"zip": false,
