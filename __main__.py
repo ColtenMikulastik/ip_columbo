@@ -11,7 +11,8 @@ def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """
     print("Test")
     for key, value in json_data.items():
-        print(str(key) + ": " + str(value))
+        if user_configs["show"]["ipgeoloc"][key]:
+            print(str(key) + ": " + str(value))
 
 
 def print_ip_information(json_data, user_configs):

@@ -20,29 +20,20 @@
 		},
 		"ipgeoloc":
 		{
-			"query": true,
-			"status": true,
-			"continent": true,
-			"continentCode": true,
+			"query": false,
+			"status": false,
 			"country": true,
-			"countryCode": true,
+			"countryCode": false,
 			"region": true,
 			"regionName": true,
 			"city": true,
-			"district": true,
-			"zip": true,
-			"lat": true,
-			"lon": true,
+			"zip": false,
+			"lat": false,
+			"lon": false,
 			"timezone": true,
-			"offset": true,
-			"currency": true,
-			"isp": true,
-			"org": true,
-			"as": true,
-			"asname": true,
-			"mobile": true,
-			"proxy": true,
-			"hosting": true
+			"isp": false,
+			"org": false,
+			"as": false
 		}
 
 	},
