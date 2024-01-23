@@ -19,32 +19,32 @@ def print_ip_information(json_data, user_configs):
 
     # print ip info based on the user configs
     print("ip information: ", end="")
-    if user_configs["show"]["ipAddress"]:
+    if user_configs["show"]["ipabusedb"]["ipAddress"]:
         print(json_data["data"]["ipAddress"] + ", ", end="")
-    if user_configs["show"]["isPublic"]:
+    if user_configs["show"]["ipabusedb"]["isPublic"]:
         if json_data["data"]["isPublic"]:
             print("Public, ", end="")
         else:
             print("Private, ", end="")
-    if user_configs["show"]["ipVersion"]:
+    if user_configs["show"]["ipabusedb"]["ipVersion"]:
         print("v" + str(json_data["data"]["ipVersion"]) + ", ", end="")
-    if user_configs["show"]["isWhitelisted"]:
+    if user_configs["show"]["ipabusedb"]["isWhitelisted"]:
         if json_data["data"]["isWhitelisted"]:
             print("Whitelisted, ", end="")
         else:
             print("Not Whitelisted, ", end="")
-    if user_configs["show"]["usageType"]:
+    if user_configs["show"]["ipabusedb"]["usageType"]:
         if json_data["data"]["usageType"] is None:
             print("Unknown Usage Type", end="")
         else:
             print(json_data["data"]["usageType"] + ", ", end="")
-    if user_configs["show"]["isTor"]:
+    if user_configs["show"]["ipabusedb"]["isTor"]:
         if json_data["data"]["isTor"]:
             print("Using Tor, ", end="")
         else:
             pass
     print()
-    if user_configs["show"]["isp"]:
+    if user_configs["show"]["ipabusedb"]["isp"]:
         print("ISP: " + str(json_data["data"]["isp"]))
 
 
@@ -52,7 +52,7 @@ def print_abuse_conf_score(json_data, user_configs):
     """ prints abuse confidence score from api """
 
     # prints the value as a bar with cool percentage at the end
-    if user_configs["show"]["abuseConfidenceScore"]:
+    if user_configs["show"]["ipabusedb"]["abuseConfidenceScore"]:
         # print the abuse certainty graphically
         # 54 characters wide
         print("abuse certainty score: ", end="")
@@ -76,9 +76,9 @@ def print_report_data(json_data, user_configs):
 
     # general information about reports
     print("report data: ", end="")
-    if user_configs["show"]["totalReports"]:
+    if user_configs["show"]["ipabusedb"]["totalReports"]:
         print(str(json_data["data"]["totalReports"]) + " Reports, ", end="")
-    if user_configs["show"]["lastReportedAt"]:
+    if user_configs["show"]["ipabusedb"]["lastReportedAt"]:
         print(
             "last report time:"
             + str(json_data["data"]["lastReportedAt"]) + ", ", end="")
