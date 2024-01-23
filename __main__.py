@@ -7,6 +7,13 @@ import socket
 import os
 
 
+def print_geolocation_info(json_data, user_configs):
+    """ prints info about from ip geoloc api call """
+    print("Test")
+    for key, value in json_data.items():
+        print(str(key) + ": " + str(value))
+
+
 def print_ip_information(json_data, user_configs):
     """ prints the ip information from api """
 
@@ -31,14 +38,14 @@ def print_ip_information(json_data, user_configs):
             print("Unknown Usage Type", end="")
         else:
             print(json_data["data"]["usageType"] + ", ", end="")
-    if user_configs["show"]["isp"]:
-        print("ISP: " + str(json_data["data"]["isp"]) + ", ", end="")
     if user_configs["show"]["isTor"]:
         if json_data["data"]["isTor"]:
             print("Using Tor, ", end="")
         else:
             pass
     print()
+    if user_configs["show"]["isp"]:
+        print("ISP: " + str(json_data["data"]["isp"]))
 
 
 def print_abuse_conf_score(json_data, user_configs):
@@ -129,6 +136,7 @@ def abuseIPDB_API_Call(ip_address, user_configs):
     # print the info if request was good
     if api_response.status_code == 200:
         # call the print functions
+        print("abuseipdb api results:")
         print_ip_information(json_resp, user_configs)
         print_abuse_conf_score(json_resp, user_configs)
         print_report_data(json_resp, user_configs)
@@ -144,8 +152,11 @@ def ip_geo_api_call(ip_address, user_configs):
     api_response = requests.get("http://ip-api.com/json/" + str(ip_address))
     json_resp = json.loads(api_response.content.decode("utf-8"))
 
-    for key, value in json_resp.items():
-        print(str(key) + ": " + str(value))
+    if json_resp["status"] == "success":
+        print("abuseipdb api results:")
+        print_geolocation_info(json_resp, user_configs)
+    else:
+        print("api call failure.")
 
 
 def main():
