@@ -1,20 +1,50 @@
 {
 	"show": 
 	{
-		"ipAddress": true,
-		"isPublic": true,
-		"ipVersion": true,
-		"isWhitelisted": true,
-		"abuseConfidenceScore": true,
-		"countryCode": true,
-		"usageType": true,
-		"isp": true,
-		"domain": true,
-		"hostnames": true,
-		"isTor": true,
-		"totalReports": true,
-		"numDistinctUsers": true,
-		"lastReportedAt": true
+		"ipabusedb":
+		{
+			"ipAddress": true,
+			"isPublic": true,
+			"ipVersion": true,
+			"isWhitelisted": true,
+			"abuseConfidenceScore": true,
+			"countryCode": true,
+			"usageType": true,
+			"isp": true,
+			"domain": true,
+			"hostnames": true,
+			"isTor": true,
+			"totalReports": true,
+			"numDistinctUsers": true,
+			"lastReportedAt": true
+		},
+		"ipgeoloc":
+		{
+			"query": true,
+			"status": true,
+			"continent": true,
+			"continentCode": true,
+			"country": true,
+			"countryCode": true,
+			"region": true,
+			"regionName": true,
+			"city": true,
+			"district": true,
+			"zip": true,
+			"lat": true,
+			"lon": true,
+			"timezone": true,
+			"offset": true,
+			"currency": true,
+			"isp": true,
+			"org": true,
+			"as": true,
+			"asname": true,
+			"mobile": true,
+			"proxy": true,
+			"hosting": true
+		}
+
 	},
 	"api_keys": 
 	{
