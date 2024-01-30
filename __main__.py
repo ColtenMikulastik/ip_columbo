@@ -89,6 +89,17 @@ def print_report_data(json_data, user_configs):
             print(report["reporterCountryCode"] + " reported at ", end="")
             print("(" + report["reportedAt"] + ") ", end="")
             print(report["comment"])
+
+    if user_configs["show"]["ipabusedb"]["reportCategories"]:
+        reported_cata = set()
+        if len(json_data["data"]["reports"]) >= 1:
+            for report in json_data["data"]["reports"]:
+                for catagory in report["categories"]:
+                    reported_cata.add(catagory)
+        print("this ip has been reported for: ", end="")
+        for catagory in reported_cata:
+            print(str(catagory) + ", ", end="")
+
     print()
 
 
