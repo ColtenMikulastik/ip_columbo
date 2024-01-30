@@ -82,6 +82,27 @@ def print_report_data(json_data, user_configs):
         print(
             "last report time:"
             + str(json_data["data"]["lastReportedAt"]) + ", ", end="")
+    print("")
+
+    if user_configs["show"]["ipabusedb"]["verboseReports"]:
+        user_def_max_report = user_configs["show"]["ipabusedb"]["reportNumber"]
+        for report in json_data["data"]["reports"][:user_def_max_report]:
+            print(report["reporterCountryCode"] + " reported at ", end="")
+            print("(" + report["reportedAt"] + ") ", end="")
+            print(report["comment"])
+
+    if user_configs["show"]["ipabusedb"]["reportCategories"]:
+        reported_cata = set()
+        if len(json_data["data"]["reports"]) >= 1:
+            for report in json_data["data"]["reports"]:
+                for catagory in report["categories"]:
+                    reported_cata.add(catagory)
+        print("this ip has been reported for: ", end="")
+        with open("report_categories.json", "r") as cat_file:
+            catagory_dict = json.load(cat_file)
+        for catagory in reported_cata:
+            print(catagory_dict[str(catagory)][0] + ", ", end="")
+
     print()
 
 
@@ -118,7 +139,8 @@ def abuseIPDB_API_Call(ip_address, user_configs):
 
     # set parameters for the API request
     params = {
-        "ipAddress": ip_address
+        "ipAddress": ip_address,
+        "verbose": "True"
     }
     headers = {
         "Key": key,

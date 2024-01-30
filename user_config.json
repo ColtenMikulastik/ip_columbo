@@ -15,8 +15,11 @@
 			"hostnames": true,
 			"isTor": true,
 			"totalReports": true,
+			"verboseReports": true,
+			"reportNumber": 2,
 			"numDistinctUsers": true,
-			"lastReportedAt": true
+			"lastReportedAt": true,
+			"reportCategories": true
 		},
 		"ipgeoloc":
 		{
