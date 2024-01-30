@@ -83,6 +83,7 @@ def print_report_data(json_data, user_configs):
             "last report time:"
             + str(json_data["data"]["lastReportedAt"]) + ", ", end="")
     print("")
+
     if user_configs["show"]["ipabusedb"]["verboseReports"]:
         user_def_max_report = user_configs["show"]["ipabusedb"]["reportNumber"]
         for report in json_data["data"]["reports"][:user_def_max_report]:
@@ -97,8 +98,10 @@ def print_report_data(json_data, user_configs):
                 for catagory in report["categories"]:
                     reported_cata.add(catagory)
         print("this ip has been reported for: ", end="")
+        with open("report_categories.json", "r") as cat_file:
+            catagory_dict = json.load(cat_file)
         for catagory in reported_cata:
-            print(str(catagory) + ", ", end="")
+            print(catagory_dict[str(catagory)][0] + ", ", end="")
 
     print()
 

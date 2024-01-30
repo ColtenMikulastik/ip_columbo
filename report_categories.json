@@ -21,5 +21,5 @@
 	"20": ["Exploited Host", "Host is likely infected with malware and being used for other attacks or to host malicious content."],
 	"21": ["Web App Attack", "Attempts to probe for or exploit installed web applications such as a CMS like WordPress/Drupal, e-commerce solutions, forum software, phpMyAdmin and various other software plugins/solutions."],
 	"22": ["SSH", "Secure Shell (SSH) abuse."],
-	"23": ["IoT Targeted", "Abuse was targeted at an \"Internet of Things\" type device."],
+	"23": ["IoT Targeted", "Abuse was targeted at an \"Internet of Things\" type device."]
 }
