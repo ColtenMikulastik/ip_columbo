@@ -16,7 +16,7 @@
 			"isTor": true,
 			"totalReports": true,
 			"verboseReports": true,
-			"reportNumber": 2,
+			"reportNumber": 10,
 			"numDistinctUsers": true,
 			"lastReportedAt": true,
 			"reportCategories": true
@@ -26,16 +26,16 @@
 			"query": false,
 			"status": false,
 			"country": true,
-			"countryCode": false,
-			"region": false,
+			"countryCode": true,
+			"region": true,
 			"regionName": true,
 			"city": true,
-			"zip": false,
+			"zip": true,
 			"lat": false,
 			"lon": false,
 			"timezone": true,
-			"isp": false,
-			"org": false,
+			"isp": true,
+			"org": true,
 			"as": false
 		}
 

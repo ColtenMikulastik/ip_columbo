@@ -9,9 +9,11 @@ import os
 
 def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """
+    print("geolocation api results:")
     for key, value in json_data.items():
         if user_configs["show"]["ipgeoloc"][key]:
-            print(str(key) + ": " + str(value))
+            print("\t" + str(key) + ": " + str(value))
+    print("")
 
 
 def print_ip_information(json_data, user_configs):
@@ -45,7 +47,14 @@ def print_ip_information(json_data, user_configs):
             pass
     print()
     if user_configs["show"]["ipabusedb"]["isp"]:
-        print("ISP: " + str(json_data["data"]["isp"]))
+        print("\tISP: " + str(json_data["data"]["isp"]))
+    if user_configs["show"]["ipabusedb"]["domain"]:
+        print("\tDomain: " + str(json_data["data"]["domain"]))
+    if user_configs["show"]["ipabusedb"]["hostnames"]:
+        print("\tHostnames: ", end='')
+        for hostname in json_data["data"]["hostnames"]:
+            print(hostname + ", ")
+    print('\n')
 
 
 def print_abuse_conf_score(json_data, user_configs):
@@ -77,7 +86,7 @@ def print_report_data(json_data, user_configs):
     # general information about reports
     print("report data: ", end="")
     if user_configs["show"]["ipabusedb"]["totalReports"]:
-        print(str(json_data["data"]["totalReports"]) + " Reports, ", end="")
+        print(str(json_data["data"]["totalReports"]) + " Reports in the last month, ", end="")
     if user_configs["show"]["ipabusedb"]["lastReportedAt"]:
         print(
             "last report time:"
@@ -87,9 +96,25 @@ def print_report_data(json_data, user_configs):
     if user_configs["show"]["ipabusedb"]["verboseReports"]:
         user_def_max_report = user_configs["show"]["ipabusedb"]["reportNumber"]
         for report in json_data["data"]["reports"][:user_def_max_report]:
+            print("\t - ", end="")
             print(report["reporterCountryCode"] + " reported at ", end="")
             print("(" + report["reportedAt"] + ") ", end="")
-            print(report["comment"])
+
+            # there really needs to be a check on the length of the comment
+            character_max = 56
+            list_comment = [ch for ch in report["comment"]]
+            report_len = len(list_comment)
+            if report_len >= character_max:
+                report_len = character_max
+                list_comment[character_max - 3] = '.'
+                list_comment[character_max - 2] = '.'
+                list_comment[character_max - 1] = '.'
+            # remove newlines
+            if '\n' in list_comment:
+                list_comment[list_comment.index('\n')] = 'n'
+
+            comment = "".join(list_comment[:report_len])
+            print(comment)
 
     if user_configs["show"]["ipabusedb"]["reportCategories"]:
         reported_cata = set()
@@ -97,13 +122,14 @@ def print_report_data(json_data, user_configs):
             for report in json_data["data"]["reports"]:
                 for catagory in report["categories"]:
                     reported_cata.add(catagory)
-        print("this ip has been reported for: ", end="")
+        print("")
+        print("Recent reports keywords: ", end="")
         with open("report_categories.json", "r") as cat_file:
             catagory_dict = json.load(cat_file)
         for catagory in reported_cata:
             print(catagory_dict[str(catagory)][0] + ", ", end="")
 
-    print()
+    print("\n")
 
 
 def clean():
@@ -159,8 +185,8 @@ def abuseIPDB_API_Call(ip_address, user_configs):
     if api_response.status_code == 200:
         # call the print functions
         print("abuseipdb api results:")
-        print_ip_information(json_resp, user_configs)
         print_abuse_conf_score(json_resp, user_configs)
+        print_ip_information(json_resp, user_configs)
         print_report_data(json_resp, user_configs)
     else:
         # print error message
@@ -175,7 +201,6 @@ def ip_geo_api_call(ip_address, user_configs):
     json_resp = json.loads(api_response.content.decode("utf-8"))
 
     if json_resp["status"] == "success":
-        print("geolocation api results:")
         print_geolocation_info(json_resp, user_configs)
     else:
         print("geolocaltion api call failure.")
