@@ -80,7 +80,7 @@ def print_report_data(json_data, user_configs):
     # general information about reports
     print("report data: ", end="")
     if user_configs["show"]["ipabusedb"]["totalReports"]:
-        print(str(json_data["data"]["totalReports"]) + " Reports, ", end="")
+        print(str(json_data["data"]["totalReports"]) + " Reports in the last month, ", end="")
     if user_configs["show"]["ipabusedb"]["lastReportedAt"]:
         print(
             "last report time:"
@@ -93,7 +93,16 @@ def print_report_data(json_data, user_configs):
             print("\t - ", end="")
             print(report["reporterCountryCode"] + " reported at ", end="")
             print("(" + report["reportedAt"] + ") ", end="")
-            print(report["comment"])
+
+            # there really needs to be a check on the length of the comment
+            character_max = 56
+            list_comment = [ch for ch in report["comment"]]
+            report_len = len(list_comment)
+            if report_len >= character_max:
+                report_len = character_max
+                list_comment.append("...")
+            comment = "".join(list_comment[:report_len])
+            print(comment)
 
     if user_configs["show"]["ipabusedb"]["reportCategories"]:
         reported_cata = set()
