@@ -103,6 +103,9 @@ def print_report_data(json_data, user_configs):
                 list_comment[character_max - 3] = '.'
                 list_comment[character_max - 2] = '.'
                 list_comment[character_max - 1] = '.'
+            # remove newlines
+            list_comment.remove('\n')
+
             comment = "".join(list_comment[:report_len])
             print(comment)
 
