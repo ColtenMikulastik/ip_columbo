@@ -48,7 +48,13 @@ def print_ip_information(json_data, user_configs):
     print()
     if user_configs["show"]["ipabusedb"]["isp"]:
         print("\tISP: " + str(json_data["data"]["isp"]))
-    print()
+    if user_configs["show"]["ipabusedb"]["domain"]:
+        print("\tDomain: " + str(json_data["data"]["domain"]))
+    if user_configs["show"]["ipabusedb"]["hostnames"]:
+        print("\tHostnames: ", end='')
+        for hostname in json_data["data"]["hostnames"]:
+            print(hostname + ", ")
+    print('\n')
 
 
 def print_abuse_conf_score(json_data, user_configs):
@@ -104,7 +110,8 @@ def print_report_data(json_data, user_configs):
                 list_comment[character_max - 2] = '.'
                 list_comment[character_max - 1] = '.'
             # remove newlines
-            list_comment.remove('\n')
+            if '\n' in list_comment:
+                list_comment[list_comment.index('\n')] = 'n'
 
             comment = "".join(list_comment[:report_len])
             print(comment)
