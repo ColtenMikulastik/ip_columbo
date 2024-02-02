@@ -100,7 +100,9 @@ def print_report_data(json_data, user_configs):
             report_len = len(list_comment)
             if report_len >= character_max:
                 report_len = character_max
-                list_comment.append("...")
+                list_comment[character_max - 3] = '.'
+                list_comment[character_max - 2] = '.'
+                list_comment[character_max - 1] = '.'
             comment = "".join(list_comment[:report_len])
             print(comment)
 
