@@ -9,6 +9,7 @@ import os
 
 def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """
+
     # prints header, and then indents each of the values
     print("geolocation api results:")
     for key, value in json_data.items():
@@ -51,6 +52,7 @@ def print_ip_information(json_data, user_configs):
 
 def print_domain_information(json_data, user_configs):
     """ prints dns isp and hostname infomration """
+
     # this will be right after the "print_ip_information" func
     if user_configs["show"]["ipabusedb"]["isp"]:
         print("\tISP: " + str(json_data["data"]["isp"]))
@@ -99,14 +101,16 @@ def print_report_data(json_data, user_configs):
             + str(json_data["data"]["lastReportedAt"]) + ", ", end="")
     print("")
 
+    # print the verbose specific reports
     if user_configs["show"]["ipabusedb"]["verboseReports"]:
         user_def_max_report = user_configs["show"]["ipabusedb"]["reportNumber"]
+        # loop through reports until max report ammount of last index is hit
         for report in json_data["data"]["reports"][:user_def_max_report]:
             print("\t - ", end="")
             print(report["reporterCountryCode"] + " reported at ", end="")
             print("(" + report["reportedAt"] + ") ", end="")
 
-            # there really needs to be a check on the length of the comment
+            # stuff for cutting off the end of reports that are too long
             character_max = 56
             list_comment = [ch for ch in report["comment"]]
             report_len = len(list_comment)
@@ -115,13 +119,15 @@ def print_report_data(json_data, user_configs):
                 list_comment[character_max - 3] = '.'
                 list_comment[character_max - 2] = '.'
                 list_comment[character_max - 1] = '.'
-            # remove newlines
+            # remove newlines if they exist
             if '\n' in list_comment:
                 list_comment[list_comment.index('\n')] = 'n'
 
+            # join the comment back together, and print
             comment = "".join(list_comment[:report_len])
             print(comment)
 
+    # pritn information about ip report categories
     if user_configs["show"]["ipabusedb"]["reportCategories"]:
         reported_cata = set()
         if len(json_data["data"]["reports"]) >= 1:
@@ -208,9 +214,11 @@ def abuseIPDB_API_Call(ip_address, user_configs):
 def ip_geo_api_call(ip_address, user_configs):
     """ uses IP-API.com to get geolocation info about ip address """
 
+    # call the ip geolocation api
     api_response = requests.get("http://ip-api.com/json/" + str(ip_address))
     json_resp = json.loads(api_response.content.decode("utf-8"))
 
+    # call the print function if the api response was successful
     if json_resp["status"] == "success":
         print_geolocation_info(json_resp, user_configs)
     else:
