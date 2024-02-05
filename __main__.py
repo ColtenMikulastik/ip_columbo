@@ -251,14 +251,20 @@ def main():
             abuseIPDB_API_Call(ip_address, user_configs)
             ip_geo_api_call(ip_address, user_configs)
         except socket.error:
+            print("ip address not detected...")
+            pass
+        try:
+            ip_address = socket.gethostbyname(ip_address)
+            print("domain name detected")
+            abuseIPDB_API_Call(ip_address, user_configs)
+            ip_geo_api_call(ip_address, user_configs)
+        except socket.gaierror:
+            print("domain name not detected")
             # not ip address, soooo other thing
             if ip_address == 'q':
                 print("closing program")
                 loop_prompt = False
                 # break
-            else:
-                print("domain name detected")
-                ip_geo_api_call(ip_address, user_configs)
 
 
 if __name__ == "__main__":
