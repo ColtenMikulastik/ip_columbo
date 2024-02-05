@@ -256,6 +256,9 @@ def main():
                 print("closing program")
                 loop_prompt = False
                 # break
+            else:
+                print("domain name detected")
+                ip_geo_api_call(ip_address, user_configs)
 
 
 if __name__ == "__main__":
