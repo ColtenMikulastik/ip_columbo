@@ -9,6 +9,7 @@ import os
 
 def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """
+    # prints header, and then indents each of the values
     print("geolocation api results:")
     for key, value in json_data.items():
         if user_configs["show"]["ipgeoloc"][key]:
@@ -46,6 +47,11 @@ def print_ip_information(json_data, user_configs):
         else:
             pass
     print()
+
+
+def print_domain_information(json_data, user_configs):
+    """ prints dns isp and hostname infomration """
+    # this will be right after the "print_ip_information" func
     if user_configs["show"]["ipabusedb"]["isp"]:
         print("\tISP: " + str(json_data["data"]["isp"]))
     if user_configs["show"]["ipabusedb"]["domain"]:
@@ -191,6 +197,7 @@ def abuseIPDB_API_Call(ip_address, user_configs):
         print("abuseipdb api results:")
         print_abuse_conf_score(json_resp, user_configs)
         print_ip_information(json_resp, user_configs)
+        print_domain_information(json_resp, user_configs)
         print_report_data(json_resp, user_configs)
     else:
         # print error message
