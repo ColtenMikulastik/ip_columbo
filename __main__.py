@@ -158,10 +158,14 @@ def abuseIPDB_API_Call(ip_address, user_configs):
     """ uses abuseIPDB_API_Call gets JSON """
     # unpack my api key
     # might require fix later
-    with open(user_configs["api_keys"]["ipabusedb"], 'r') as file:
-        key = file.read()
-        key = key.split()
-        key = "".join(key)
+    try:
+        with open(user_configs["api_keys"]["ipabusedb"], 'r') as file:
+            key = file.read()
+            key = key.split()
+            key = "".join(key)
+    except Exception:
+        print("error when reading from apikey file")
+        return
 
     # set parameters for the API request
     params = {
