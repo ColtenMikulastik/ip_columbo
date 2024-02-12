@@ -42,7 +42,8 @@
 	},
 	"api_keys": 
 	{
-		"ipabusedb": "AbuseIPDB_API_Key.key"
+		"ipabusedb": "AbuseIPDB_API_Key.key",
+		"virustotal": "VirusTotal_API_key.key"
 	}
 
 
