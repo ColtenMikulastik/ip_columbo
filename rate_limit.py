@@ -36,3 +36,16 @@ class rate_limit:
 
         # iterate teh context
         self.api_context = self.api_context + 1
+        return True
+
+    def get_first_request_time(self):
+        return self.first_request_time
+
+    def set_first_request_time(self, set_time):
+        self.first_request_time = set_time
+
+    def get_api_context(self):
+        return self.api_context
+
+    def set_api_context(self, api_context):
+        self.api_context = api_context

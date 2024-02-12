@@ -157,6 +157,32 @@ def clean():
         _ = os.system('clear')
 
 
+def load_rate_limit_file(rate_limit_thing, file_name):
+    """ loads rate limit information saved in the log file if it exists """
+
+    try:
+        with open(file_name + "log.json", 'r') as f:
+            json_out = json.load(f)
+            rate_limit_thing.set_first_request_time(json_out["time"])
+            rate_limit_thing.set_api_context(json_out["context"])
+            print("previous context loaded...")
+    except FileNotFoundError:
+        print("previous log file not found, continuing w/o context")
+
+    return rate_limit_thing
+
+
+def write_rate_limit_file(rate_limit_thing, file_name):
+    """ writes rate limit information to the log.json file """
+
+    dict_rate_limit_info = {}
+    dict_rate_limit_info["time"] = rate_limit_thing.get_first_request_time()
+    dict_rate_limit_info["context"] = rate_limit_thing.get_api_context()
+
+    with open(file_name + "log.json", 'w') as f:
+        json.dump(dict_rate_limit_info, f)
+
+
 def load_user_config():
     """ loads user configuration json file into dictionary """
 
@@ -244,12 +270,15 @@ def main():
     print("loading user configurations...")
     user_configs = load_user_config()
     print("configurations loaded successfully")
-    time.sleep(.5)
-    # might have to move these if it doesn't work correctly in this scope
+
     # ip abuse db 1000 req per day
     ip_abuse_rate_limiter = rate_limit(1000, 86400)
     # ip geoloc db is 45 req per min
-    ip_geoloc_rate_limiter = rate_limit(45, 60)
+    ip_geoloc_rate_limiter = rate_limit(4, 60)
+
+    # load log from log.json file for rate limit context
+    ip_abuse_rate_limiter = load_rate_limit_file(ip_abuse_rate_limiter, "ip_abuse")
+    ip_geoloc_rate_limiter = load_rate_limit_file(ip_geoloc_rate_limiter, "ip_geoloc")
 
     loop_prompt = True
     while loop_prompt:
@@ -280,11 +309,14 @@ def main():
             # not ip address, soooo other thing
             if ip_address == 'q':
                 print("closing program")
+                print("writing to log files")
+                write_rate_limit_file(ip_abuse_rate_limiter, "ip_abuse")
+                write_rate_limit_file(ip_geoloc_rate_limiter, "ip_geoloc")
                 loop_prompt = False
                 # break
         if is_acceptable_input:
             abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
-            ip_geo_api_call(ip_address, user_configs, ip_abuse_rate_limiter)
+            ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
 
 
 if __name__ == "__main__":
