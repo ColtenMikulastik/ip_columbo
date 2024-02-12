@@ -1,4 +1,5 @@
 
+from rate_limit import rate_limit
 from termcolor import colored
 import requests
 import json
@@ -166,7 +167,7 @@ def load_user_config():
     return user_configs
 
 
-def abuseIPDB_API_Call(ip_address, user_configs):
+def abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter):
     """ uses abuseIPDB_API_Call gets JSON """
     # unpack my api key
     # might require fix later
@@ -189,10 +190,15 @@ def abuseIPDB_API_Call(ip_address, user_configs):
         "Accept": "application/json"
     }
 
-    # call api
-    api_response = requests.get("https://api.abuseipdb.com/api/v2/check",
-                                params=params,
-                                headers=headers)
+    # call api if we are within limits
+    if ip_abuse_rate_limiter.update_context():
+        api_response = requests.get("https://api.abuseipdb.com/api/v2/check",
+                                    params=params,
+                                    headers=headers)
+    else:
+        print("ipabusedb api call not within rate limits!")
+        print("try again in a minute!")
+        return
 
     # format from byte thing to json dict
     json_resp = json.loads(api_response.content.decode("utf-8"))
@@ -211,11 +217,18 @@ def abuseIPDB_API_Call(ip_address, user_configs):
         print("abuseipdb api response: " + json_resp["errors"][0]["detail"])
 
 
-def ip_geo_api_call(ip_address, user_configs):
+def ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter):
     """ uses IP-API.com to get geolocation info about ip address """
 
-    # call the ip geolocation api
-    api_response = requests.get("http://ip-api.com/json/" + str(ip_address))
+    # call the ip geolocation api if within limits
+    if ip_geoloc_rate_limiter.update_context():
+        api_response = requests.get("http://ip-api.com/json/" + str(ip_address))
+    else:
+        print("geoloc api call not within rate limits!")
+        print("try again in a minute!")
+        return
+
+    # turn jsonified
     json_resp = json.loads(api_response.content.decode("utf-8"))
 
     # call the print function if the api response was successful
@@ -232,6 +245,11 @@ def main():
     user_configs = load_user_config()
     print("configurations loaded successfully")
     time.sleep(.5)
+    # might have to move these if it doesn't work correctly in this scope
+    # ip abuse db 1000 req per day
+    ip_abuse_rate_limiter = rate_limit(1000, 86400)
+    # ip geoloc db is 45 req per min
+    ip_geoloc_rate_limiter = rate_limit(45, 60)
 
     loop_prompt = True
     while loop_prompt:
@@ -265,8 +283,8 @@ def main():
                 loop_prompt = False
                 # break
         if is_acceptable_input:
-            abuseIPDB_API_Call(ip_address, user_configs)
-            ip_geo_api_call(ip_address, user_configs)
+            abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
+            ip_geo_api_call(ip_address, user_configs, ip_abuse_rate_limiter)
 
 
 if __name__ == "__main__":
