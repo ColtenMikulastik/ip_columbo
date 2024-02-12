@@ -274,7 +274,7 @@ def main():
     # ip abuse db 1000 req per day
     ip_abuse_rate_limiter = rate_limit(1000, 86400)
     # ip geoloc db is 45 req per min
-    ip_geoloc_rate_limiter = rate_limit(4, 60)
+    ip_geoloc_rate_limiter = rate_limit(45, 60)
 
     # load log from log.json file for rate limit context
     ip_abuse_rate_limiter = load_rate_limit_file(ip_abuse_rate_limiter, "ip_abuse")
