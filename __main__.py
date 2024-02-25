@@ -160,9 +160,9 @@ def clean():
 
 def load_rate_limit_file(rate_limit_thing, file_name):
     """ loads rate limit information saved in the log file if it exists """
-
+    full_path = os.path.realpath(os.path.join("log", file_name + "log.json"))
     try:
-        with open(file_name + "log.json", 'r') as f:
+        with open(full_path, 'r') as f:
             json_out = json.load(f)
             rate_limit_thing.set_first_request_time(json_out["time"])
             rate_limit_thing.set_api_context(json_out["context"])
@@ -180,7 +180,14 @@ def write_rate_limit_file(rate_limit_thing, file_name):
     dict_rate_limit_info["time"] = rate_limit_thing.get_first_request_time()
     dict_rate_limit_info["context"] = rate_limit_thing.get_api_context()
 
-    with open(file_name + "log.json", 'w') as f:
+    # make sure that file path actually exists
+    log_file_exist = os.path.exists(os.path.realpath("log"))
+    if not log_file_exist:
+        os.mkdir(os.path.realpath("log"))
+
+    # write log files
+    full_path = os.path.realpath(os.path.join("log", file_name + "log.json"))
+    with open(full_path, 'w') as f:
         json.dump(dict_rate_limit_info, f)
 
 
