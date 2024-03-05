@@ -294,6 +294,7 @@ def main():
         with open("banner.txt", 'r') as banner:
             print(banner.read())
 
+        # print the options for the prompt
         print("- enter 'q' to quit")
 
         ip_address = input("ip: ")
