@@ -47,7 +47,7 @@ Edit the "user_config.json" file to add or remove output about specific ip's, do
 ip_columbo is heavily relyant on API keys to these websites.
 - ***AbuseIPDB***
 - ***ip-api.com*** (doesn't require key)
-- ***VirusTotal*** (coming soon)
+- ***malware bazaar***
 
 ### ETC.
 - Python3
