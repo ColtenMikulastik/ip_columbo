@@ -1,3 +1,2 @@
 termcolor
 requests
-vt-py

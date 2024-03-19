@@ -3,8 +3,6 @@ from rate_limit import rate_limit
 from termcolor import colored
 import requests
 import json
-import vt
-import time
 import socket
 import os
 
