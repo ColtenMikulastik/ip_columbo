@@ -285,6 +285,7 @@ def main():
     ip_geoloc_rate_limiter = rate_limit(45, 60)
 
     # load log from log.json file for rate limit context
+    # malware bazaar is super chill so no rate limit needed
     ip_abuse_rate_limiter = load_rate_limit_file(ip_abuse_rate_limiter, "ip_abuse")
     ip_geoloc_rate_limiter = load_rate_limit_file(ip_geoloc_rate_limiter, "ip_geoloc")
 
