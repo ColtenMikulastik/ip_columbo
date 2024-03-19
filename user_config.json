@@ -43,7 +43,7 @@
 	"api_keys": 
 	{
 		"ipabusedb": "AbuseIPDB_API_Key.key",
-		"virustotal": "VirusTotal_API_key.key"
+		"malwarebazaar": "Malware_Bazar_API_Key.key"
 	}
 
 
