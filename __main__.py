@@ -158,6 +158,27 @@ def clean():
         _ = os.system('clear')
 
 
+def check_for_hash(input_str):
+    """ validates if input is hash by checking length and characters """
+    # check if only hexadecimal digits
+    # going to use this cheeky character check I found
+    allowed_characters = set("0123456789abcdefABCDEF")
+    if not set(input_str) <= allowed_characters:
+        # too many types of characters, return false
+        return False
+    else:
+        # check if it's a common hash format (sha256, sha1, md5)
+        match len(input_str):
+            case 64:
+                return True
+            case 40:
+                return True
+            case 32:
+                return True
+            case _:
+                return False
+
+
 def load_rate_limit_file(rate_limit_thing, file_name):
     """ loads rate limit information saved in the log file if it exists """
     full_path = os.path.realpath(os.path.join("log", file_name + "log.json"))
@@ -272,6 +293,38 @@ def ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter):
         print("geolocaltion api call failure.")
 
 
+def malware_bazaar_api_call(hash, user_configs):
+    """ uses malware bazaar api to get info about possibly malicous hash """
+
+    # attempt to load api key
+    try:
+        with open(user_configs["api_keys"]["malwarebazaar"], 'r') as file:
+            key = file.read()
+            key = key.split()
+            key = "".join(key)
+    except Exception:
+        print("error when reading from apikey file")
+        return
+
+    # load the data
+    data = {
+        "query": "get_info",
+        "hash": hash
+    }
+
+    # load api key into the headers
+    headers = {
+        "API-KEY": key
+    }
+
+    response = requests.post("https://mb-api.abuse.ch/api/v1/", data=data, timeout=15, headers=headers)
+    # call the api
+
+    # send api data to printing function
+    json_resp = response.content.decode("utf-8")
+    print(json_resp)
+
+
 def main():
     """ gets user input and calls all the other functions """
 
@@ -327,6 +380,10 @@ def main():
         if is_acceptable_input:
             abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
             ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
+        # check if it's a hash
+        elif check_for_hash(ip_address):
+            # send to malware bazaar api
+            malware_bazaar_api_call(ip_address, user_configs)
 
 
 if __name__ == "__main__":
