@@ -7,6 +7,15 @@ import socket
 import os
 
 
+def print_malware_bazaar_info(json_data, user_configs):
+    """ print the information from the malware bazaar api """
+    print(json_data)
+    print(type(json_data))
+    print("hash information: ")
+    if user_configs["show"]["malware_bazaar"]["hashes"]:
+        print("sha256: " + json_data["data"][0]["md5_hash"])
+
+
 def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """
 
@@ -304,23 +313,20 @@ def malware_bazaar_api_call(hash, user_configs):
         print("error when reading from apikey file")
         return
 
-    # load the data
+    # load the data and headers
     data = {
         "query": "get_info",
         "hash": hash
     }
-
-    # load api key into the headers
     headers = {
         "API-KEY": key
     }
 
+    # call api
     response = requests.post("https://mb-api.abuse.ch/api/v1/", data=data, timeout=15, headers=headers)
-    # call the api
-
     # send api data to printing function
-    json_resp = response.content.decode("utf-8")
-    print(json_resp)
+    json_resp = json.loads(response.content.decode("utf-8"))
+    print_malware_bazaar_info(json_resp, user_configs)
 
 
 def main():
