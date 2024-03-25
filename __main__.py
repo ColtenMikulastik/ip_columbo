@@ -175,13 +175,20 @@ def check_for_hash(input_str):
         return False
     else:
         # check if it's a common hash format (sha256, sha1, md5)
+        # len of str * 4
         match len(input_str):
             case 64:
+                # Checks for sha256
                 return True
             case 40:
+                # Checks for Sha1
                 return True
             case 32:
+                # Checks for md5
                 return True
+            # case 96:
+            #     # Checks for sha384
+            #     return True
             case _:
                 return False
 
@@ -381,13 +388,13 @@ def main():
                 write_rate_limit_file(ip_geoloc_rate_limiter, "ip_geoloc")
                 loop_prompt = False
                 # break
-        if is_acceptable_input:
-            abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
-            ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
         # check if it's a hash
-        elif check_for_hash(ip_address):
+        if check_for_hash(ip_address):
             # send to malware bazaar api
             malware_bazaar_api_call(ip_address, user_configs)
+        elif is_acceptable_input:
+            abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
+            ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
 
 
 if __name__ == "__main__":
