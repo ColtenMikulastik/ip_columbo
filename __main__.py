@@ -40,16 +40,58 @@ def print_malware_bazaar_info(json_data, user_configs):
         print("\treporter:\t" + str(json_data["data"][0]["reporter"]))
         print("\treport country:\t" + str(json_data["data"][0]["origin_country"]))
 
-    if user_configs["show"]["malware_bazaar"]["reporter_info"]:
-        print("Reporting Information:")
-        print("\treporter:\t" + str(json_data["data"][0]["reporter"]))
-        print("\treport country:\t" + str(json_data["data"][0]["origin_country"]))
-
     if user_configs["show"]["malware_bazaar"]["tags"]:
         print("Associated Tags: ", end='')
         for tag in json_data["data"][0]["tags"]:
             print(str(tag) + ",", end='')
         print()
+
+    # signatures are being finicky
+    # if user_configs["show"]["malware_bazaar"]["code_sign"]:
+    #     print("Code Signatures: ", end='')
+    #     for sign in json_data["data"][0]["code_sign"]:
+    #         print("\t- " + str(sign))
+    #     print()
+
+    # printing delivery method
+    if user_configs["show"]["malware_bazaar"]["delivery_method"]:
+        print("Reported Mode of Delivery: ", end='')
+        print(str(json_data["data"][0]["delivery_method"]))
+
+    # printing yara stuff if it's there
+    if user_configs["show"]["malware_bazaar"]["yara_rules"]:
+        print("YARA Results:")
+        if json_data["data"][0]["yara_rules"] is not None:
+            max_rule_print = user_configs["show"]["malware_bazaar"]["yara_rule_Number"]
+            for rule in json_data["data"][0]["yara_rules"][:max_rule_print]:
+                print("\t" + str(rule["author"]) + ": " + str(rule["rule_name"]))
+                if rule["description"] is not None:
+                    print("\t\t- description:\t" + str(rule["description"]))
+                if rule["reference"] is not None:
+                    print("\t\t- reference:\t" + str(rule["reference"]))
+        else:
+            print("none")
+
+    # print the ole info
+    if user_configs["show"]["malware_bazaar"]["ole_info"]:
+        if len(json_data["data"][0]["ole_information"]) == 0:
+            print("No oleinfo Results...")
+        else:
+            print("oleinfo Results:")
+            print(json_data["data"][0]["ole_information"])
+
+    # heres where I'm gonna put the vendor intel section
+    # if user_configs["show"]["malware_bazaar"]["vendor_intel"]:
+    #     print(str(json_data["data"][0]["vendor_intel"]))
+
+    # print the comments info
+    if user_configs["show"]["malware_bazaar"]["comments"]:
+        if json_data["data"][0]["comments"] is not None:
+            print(json_data["data"][0]["comments"])
+        else:
+            print("no comment information...")
+
+
 
 
 def print_geolocation_info(json_data, user_configs):
