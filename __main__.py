@@ -51,6 +51,32 @@ def print_malware_bazaar_info(json_data, user_configs):
             print(str(tag) + ",", end='')
         print()
 
+    # signatures are being finicky
+    # if user_configs["show"]["malware_bazaar"]["code_sign"]:
+    #     print("Code Signatures: ", end='')
+    #     for sign in json_data["data"][0]["code_sign"]:
+    #         print("\t- " + str(sign))
+    #     print()
+
+    # printing delivery method
+    if user_configs["show"]["malware_bazaar"]["delivery_method"]:
+        print("Reported Mode of Delivery: ", end='')
+        print(str(json_data["data"][0]["delivery_method"]))
+
+    # printing yara stuff if it's there
+    if user_configs["show"]["malware_bazaar"]["yara_rules"]:
+        print("YARA Results:")
+        if json_data["data"][0]["yara_rules"] is not None:
+            max_rule_print = user_configs["show"]["malware_bazaar"]["yara_rule_Number"]
+            for rule in json_data["data"][0]["yara_rules"][:max_rule_print]:
+                print("\t" + str(rule["author"]) + ": " + str(rule["rule_name"]))
+                if rule["description"] is not None:
+                    print("\t\t- description:\t" + str(rule["description"]))
+                if rule["reference"] is not None:
+                    print("\t\t- reference:\t" + str(rule["reference"]))
+        else:
+            print("none")
+
 
 def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """

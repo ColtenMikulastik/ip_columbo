@@ -48,6 +48,7 @@
 			"code_sign": true,
 			"delivery_method": true,
 			"yara_rules": true,
+			"yara_rule_Number": 3,
 			"ole_info": true,
 			"vendor_intel": true,
 			"comments": true,
