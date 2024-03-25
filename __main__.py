@@ -37,12 +37,20 @@ def print_malware_bazaar_info(json_data, user_configs):
     # printing the reporting information if wanted
     if user_configs["show"]["malware_bazaar"]["reporter_info"]:
         print("Reporting Information:")
-        print("\tfile name:\t" + str(json_data["data"][0]["file_name"]))
-        print("\tfile size:\t" + str(json_data["data"][0]["file_size"]))
-        print("\tfile type:\t" + str(json_data["data"][0]["file_type"]))
-        print("\tMIME desc:\t" + str(json_data["data"][0]["file_type"]))
-    
-    
+        print("\treporter:\t" + str(json_data["data"][0]["reporter"]))
+        print("\treport country:\t" + str(json_data["data"][0]["origin_country"]))
+
+    if user_configs["show"]["malware_bazaar"]["reporter_info"]:
+        print("Reporting Information:")
+        print("\treporter:\t" + str(json_data["data"][0]["reporter"]))
+        print("\treport country:\t" + str(json_data["data"][0]["origin_country"]))
+
+    if user_configs["show"]["malware_bazaar"]["tags"]:
+        print("Associated Tags: ", end='')
+        for tag in json_data["data"][0]["tags"]:
+            print(str(tag) + ",", end='')
+        print()
+
 
 def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """
