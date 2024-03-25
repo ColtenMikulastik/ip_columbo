@@ -11,10 +11,38 @@ def print_malware_bazaar_info(json_data, user_configs):
     """ print the information from the malware bazaar api """
     print(json_data)
     print(type(json_data))
-    print("hash information: ")
-    if user_configs["show"]["malware_bazaar"]["hashes"]:
-        print("sha256: " + json_data["data"][0]["md5_hash"])
 
+    # printing the timestamp information if wanted
+    if user_configs["show"]["malware_bazaar"]["hashes"]:
+        print("Hash Information:")
+        print("\tsha256:\t" + str(json_data["data"][0]["md5_hash"]))
+        print("\tsha384:\t" + str(json_data["data"][0]["sha3_384_hash"]))
+        print("\tsha1:\t" + str(json_data["data"][0]["sha1_hash"]))
+        print("\tmd5:\t" + str(json_data["data"][0]["md5_hash"]))
+
+    # printing the timestamp information if wanted
+    if user_configs["show"]["malware_bazaar"]["timestamps"]:
+        print("Time Information:")
+        print("\tfirst seen:\t" + str(json_data["data"][0]["first_seen"]))
+        print("\tlast seen:\t" + str(json_data["data"][0]["last_seen"]))
+
+    # printing the file information if wanted
+    if user_configs["show"]["malware_bazaar"]["file_info"]:
+        print("File Information:")
+        print("\tfile name:\t" + str(json_data["data"][0]["file_name"]))
+        print("\tfile size:\t" + str(json_data["data"][0]["file_size"]))
+        print("\tfile type:\t" + str(json_data["data"][0]["file_type"]))
+        print("\tMIME type desc:\t" + str(json_data["data"][0]["file_type"]))
+
+    # printing the reporting information if wanted
+    if user_configs["show"]["malware_bazaar"]["reporter_info"]:
+        print("Reporting Information:")
+        print("\tfile name:\t" + str(json_data["data"][0]["file_name"]))
+        print("\tfile size:\t" + str(json_data["data"][0]["file_size"]))
+        print("\tfile type:\t" + str(json_data["data"][0]["file_type"]))
+        print("\tMIME desc:\t" + str(json_data["data"][0]["file_type"]))
+    
+    
 
 def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """
