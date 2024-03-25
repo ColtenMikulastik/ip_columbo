@@ -37,6 +37,21 @@
 			"isp": true,
 			"org": true,
 			"as": false
+		},
+		"malware_bazaar":
+		{
+			"hashes": true,
+			"timestamps": true,
+			"file_info": true,
+			"reporter_info": true,
+			"tags": true,
+			"code_sign": true,
+			"delivery_method": true,
+			"yara_rules": true,
+			"ole_info": true,
+			"vendor_intel": true,
+			"comments": true,
+			"verbose_info": true
 		}
 
 	},

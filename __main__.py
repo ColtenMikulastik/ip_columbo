@@ -7,6 +7,51 @@ import socket
 import os
 
 
+def print_malware_bazaar_info(json_data, user_configs):
+    """ print the information from the malware bazaar api """
+    print(json_data)
+    print(type(json_data))
+
+    # printing the timestamp information if wanted
+    if user_configs["show"]["malware_bazaar"]["hashes"]:
+        print("Hash Information:")
+        print("\tsha256:\t" + str(json_data["data"][0]["md5_hash"]))
+        print("\tsha384:\t" + str(json_data["data"][0]["sha3_384_hash"]))
+        print("\tsha1:\t" + str(json_data["data"][0]["sha1_hash"]))
+        print("\tmd5:\t" + str(json_data["data"][0]["md5_hash"]))
+
+    # printing the timestamp information if wanted
+    if user_configs["show"]["malware_bazaar"]["timestamps"]:
+        print("Time Information:")
+        print("\tfirst seen:\t" + str(json_data["data"][0]["first_seen"]))
+        print("\tlast seen:\t" + str(json_data["data"][0]["last_seen"]))
+
+    # printing the file information if wanted
+    if user_configs["show"]["malware_bazaar"]["file_info"]:
+        print("File Information:")
+        print("\tfile name:\t" + str(json_data["data"][0]["file_name"]))
+        print("\tfile size:\t" + str(json_data["data"][0]["file_size"]))
+        print("\tfile type:\t" + str(json_data["data"][0]["file_type"]))
+        print("\tMIME type desc:\t" + str(json_data["data"][0]["file_type"]))
+
+    # printing the reporting information if wanted
+    if user_configs["show"]["malware_bazaar"]["reporter_info"]:
+        print("Reporting Information:")
+        print("\treporter:\t" + str(json_data["data"][0]["reporter"]))
+        print("\treport country:\t" + str(json_data["data"][0]["origin_country"]))
+
+    if user_configs["show"]["malware_bazaar"]["reporter_info"]:
+        print("Reporting Information:")
+        print("\treporter:\t" + str(json_data["data"][0]["reporter"]))
+        print("\treport country:\t" + str(json_data["data"][0]["origin_country"]))
+
+    if user_configs["show"]["malware_bazaar"]["tags"]:
+        print("Associated Tags: ", end='')
+        for tag in json_data["data"][0]["tags"]:
+            print(str(tag) + ",", end='')
+        print()
+
+
 def print_geolocation_info(json_data, user_configs):
     """ prints info about from ip geoloc api call """
 
@@ -166,13 +211,20 @@ def check_for_hash(input_str):
         return False
     else:
         # check if it's a common hash format (sha256, sha1, md5)
+        # len of str * 4
         match len(input_str):
             case 64:
+                # Checks for sha256
                 return True
             case 40:
+                # Checks for Sha1
                 return True
             case 32:
+                # Checks for md5
                 return True
+            # case 96:
+            #     # Checks for sha384
+            #     return True
             case _:
                 return False
 
@@ -304,23 +356,20 @@ def malware_bazaar_api_call(hash, user_configs):
         print("error when reading from apikey file")
         return
 
-    # load the data
+    # load the data and headers
     data = {
         "query": "get_info",
         "hash": hash
     }
-
-    # load api key into the headers
     headers = {
         "API-KEY": key
     }
 
+    # call api
     response = requests.post("https://mb-api.abuse.ch/api/v1/", data=data, timeout=15, headers=headers)
-    # call the api
-
     # send api data to printing function
-    json_resp = response.content.decode("utf-8")
-    print(json_resp)
+    json_resp = json.loads(response.content.decode("utf-8"))
+    print_malware_bazaar_info(json_resp, user_configs)
 
 
 def main():
@@ -375,13 +424,13 @@ def main():
                 write_rate_limit_file(ip_geoloc_rate_limiter, "ip_geoloc")
                 loop_prompt = False
                 # break
-        if is_acceptable_input:
-            abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
-            ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
         # check if it's a hash
-        elif check_for_hash(ip_address):
+        if check_for_hash(ip_address):
             # send to malware bazaar api
             malware_bazaar_api_call(ip_address, user_configs)
+        elif is_acceptable_input:
+            abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
+            ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
 
 
 if __name__ == "__main__":
