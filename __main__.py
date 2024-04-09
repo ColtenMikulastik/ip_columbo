@@ -264,9 +264,10 @@ def check_for_hash(input_str):
             case 32:
                 # Checks for md5
                 return True
-            # case 96:
-            #     # Checks for sha384
-            #     return True
+            case 96:
+                # Checks for sha384 (not supported by malware bazzar api
+                print("Sorry: sha384 is not supported")
+                return False
             case _:
                 return False
 
@@ -456,6 +457,9 @@ def main():
             ip_address = socket.gethostbyname(ip_address)
             print("domain name detected")
             is_acceptable_input = True
+        except UnicodeError:
+            # error thrown when characters in string exceed 64
+            print("input string too long, unexpected results could occur (if domain-name)")
         except socket.gaierror:
             print("domain name not detected")
             # not ip address, soooo other thing
