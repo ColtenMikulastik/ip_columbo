@@ -412,7 +412,12 @@ def malware_bazaar_api_call(hash, user_configs):
     response = requests.post("https://mb-api.abuse.ch/api/v1/", data=data, timeout=15, headers=headers)
     # send api data to printing function
     json_resp = json.loads(response.content.decode("utf-8"))
-    print_malware_bazaar_info(json_resp, user_configs)
+
+    if json_resp["query_status"] == "ok":
+        print_malware_bazaar_info(json_resp, user_configs)
+    else:
+        print("Malware Bazaar api call failure.")
+        print(json_resp)
 
 
 def main():
