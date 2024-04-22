@@ -1,5 +1,6 @@
 
 from rate_limit import rate_limit
+from requests.api import head
 from termcolor import colored
 import requests
 import json
@@ -7,7 +8,11 @@ import socket
 import os
 
 
-def auto_reporting_ip_abuse(json_data, catagory_dict):
+def auto_reporting_ip_abuse(ip_address, user_configs):
+    """ reports user to ipabusedb via api"""
+
+    # unload the catagory file
+    catagory_dict = unload_catagory_file()
 
     # auto reporting if the user wants it
     print("please select the report category this ip is connected with.")
@@ -25,6 +30,43 @@ def auto_reporting_ip_abuse(json_data, catagory_dict):
         print()
     report_cat = input("please type a number for the report catagory:")
 
+    if report_cat == 0:
+        return
+    else:
+        # unload ipabuse db api key
+        try:
+            with open(user_configs["api_keys"]["ipabusedb"], 'r') as file:
+                key = file.read()
+                key = key.split()
+                key = "".join(key)
+        except Exception:
+            print("error when reading from apikey file")
+            return
+
+        # set up parameters for the api
+        params = {
+            "ipAddress": ip_address,
+            "verbose": "True"
+        }
+        headers = {
+            "Key": key,
+            "Accept": "application/json"
+        }
+        data = {
+            "ip": ip_address,
+            "categories": report_cat
+        }
+
+        # send post to api
+        url = "https://api.abuseipdb.com/api/v2/report"
+        response = requests.post(url, params=params, data=data, headers=headers)
+
+        # check if successful or not
+        if response.status_code == 200:
+            print("successful post to ipabusedb")
+        else:
+            print("error occured")
+    return
 
 
 
@@ -196,6 +238,13 @@ def print_abuse_conf_score(json_data, user_configs):
         print(']' + colored(zfill_score + '%', color=char_color))
 
 
+def unload_catagory_file():
+    catagory_dict = dict()
+    with open("report_categories.json", "r") as cat_file:
+        catagory_dict = json.load(cat_file)
+    return catagory_dict
+
+
 def print_report_data(json_data, user_configs):
     """ prints data about reports from the api """
 
@@ -236,9 +285,7 @@ def print_report_data(json_data, user_configs):
             print(comment)
 
     # unload catagory files for this section
-    catagory_dict = dict()
-    with open("report_categories.json", "r") as cat_file:
-        catagory_dict = json.load(cat_file)
+    catagory_dict = unload_catagory_file()
 
     # pritn information about ip report categories
     if user_configs["show"]["ipabusedb"]["reportCategories"]:
@@ -253,8 +300,6 @@ def print_report_data(json_data, user_configs):
             print(catagory_dict[str(catagory)][0] + ", ", end="")
 
     # call the reporting
-    if user_configs["show"]["ipabusedb"]["auto_reporting"]:
-        auto_reporting_ip_abuse(json_data, catagory_dict)
     print("\n")
 
 
@@ -509,6 +554,8 @@ def main():
         elif is_acceptable_input:
             abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
             ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
+            if user_configs["show"]["ipabusedb"]["auto_reporting"]:
+                auto_reporting_ip_abuse(ip_address, user_configs)
 
 
 if __name__ == "__main__":
