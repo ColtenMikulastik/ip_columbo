@@ -8,7 +8,7 @@ import socket
 import os
 
 
-def auto_reporting_ip_abuse(ip_address, user_configs):
+def auto_reporting_ip_abuse(ip_address, user_configs, ip_abuse_report_limiter):
     """ reports user to ipabusedb via api"""
 
     # unload the catagory file
@@ -30,7 +30,7 @@ def auto_reporting_ip_abuse(ip_address, user_configs):
         print()
     report_cat = input("please type a number for the report catagory:")
 
-    if report_cat == 0:
+    if report_cat == "0":
         return
     else:
         # unload ipabuse db api key
@@ -57,9 +57,14 @@ def auto_reporting_ip_abuse(ip_address, user_configs):
             "categories": report_cat
         }
 
-        # send post to api
-        url = "https://api.abuseipdb.com/api/v2/report"
-        response = requests.post(url, params=params, data=data, headers=headers)
+        if ip_abuse_report_limiter.update_context():
+            # send post to api
+            url = "https://api.abuseipdb.com/api/v2/report"
+            response = requests.post(url, params=params, data=data, headers=headers)
+        else:
+            print("ipabuse report api request not within rate limits!")
+            print("try again in a minute!")
+            return
 
         # check if successful or not
         if response.status_code == 200:
@@ -501,12 +506,15 @@ def main():
 
     # ip abuse db 1000 req per day
     ip_abuse_rate_limiter = rate_limit(1000, 86400)
+    # ip abuse db report 1000 per day
+    ip_abuse_report_limiter = rate_limit(1000, 86400)
     # ip geoloc db is 45 req per min
     ip_geoloc_rate_limiter = rate_limit(45, 60)
 
     # load log from log.json file for rate limit context
     # malware bazaar is super chill so no rate limit needed
     ip_abuse_rate_limiter = load_rate_limit_file(ip_abuse_rate_limiter, "ip_abuse")
+    ip_abuse_report_limiter = load_rate_limit_file(ip_abuse_report_limiter, "ip_report")
     ip_geoloc_rate_limiter = load_rate_limit_file(ip_geoloc_rate_limiter, "ip_geoloc")
 
     loop_prompt = True
@@ -544,6 +552,7 @@ def main():
                 print("closing program")
                 print("writing to log files")
                 write_rate_limit_file(ip_abuse_rate_limiter, "ip_abuse")
+                write_rate_limit_file(ip_abuse_report_limiter, "ip_report")
                 write_rate_limit_file(ip_geoloc_rate_limiter, "ip_geoloc")
                 loop_prompt = False
                 # break
@@ -555,7 +564,7 @@ def main():
             abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
             ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
             if user_configs["show"]["ipabusedb"]["auto_reporting"]:
-                auto_reporting_ip_abuse(ip_address, user_configs)
+                auto_reporting_ip_abuse(ip_address, user_configs, ip_abuse_report_limiter)
 
 
 if __name__ == "__main__":
