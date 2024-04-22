@@ -19,7 +19,8 @@
 			"reportNumber": 10,
 			"numDistinctUsers": true,
 			"lastReportedAt": true,
-			"reportCategories": true
+			"reportCategories": true,
+			"auto_reporting": true
 		},
 		"ipgeoloc":
 		{

@@ -1,10 +1,78 @@
 
 from rate_limit import rate_limit
+from requests.api import head
 from termcolor import colored
 import requests
 import json
 import socket
 import os
+
+
+def auto_reporting_ip_abuse(ip_address, user_configs, ip_abuse_report_limiter):
+    """ reports user to ipabusedb via api"""
+
+    # unload the catagory file
+    catagory_dict = unload_catagory_file()
+
+    # auto reporting if the user wants it
+    print("please select the report category this ip is connected with.")
+    print("0 - to cancel without reporting, ")
+    cat_num = 1
+    while cat_num <= 23:
+        row = 0
+        while row <= 2:
+            if cat_num >= 24:
+                pass
+            else:
+                print(str(cat_num) + " - " + catagory_dict[str(cat_num)][0] + ", ", end="\t")
+            cat_num = cat_num + 1
+            row = row + 1
+        print()
+    report_cat = input("please type a number for the report catagory:")
+
+    if report_cat == "0":
+        return
+    else:
+        # unload ipabuse db api key
+        try:
+            with open(user_configs["api_keys"]["ipabusedb"], 'r') as file:
+                key = file.read()
+                key = key.split()
+                key = "".join(key)
+        except Exception:
+            print("error when reading from apikey file")
+            return
+
+        # set up parameters for the api
+        params = {
+            "ipAddress": ip_address,
+            "verbose": "True"
+        }
+        headers = {
+            "Key": key,
+            "Accept": "application/json"
+        }
+        data = {
+            "ip": ip_address,
+            "categories": report_cat
+        }
+
+        if ip_abuse_report_limiter.update_context():
+            # send post to api
+            url = "https://api.abuseipdb.com/api/v2/report"
+            response = requests.post(url, params=params, data=data, headers=headers)
+        else:
+            print("ipabuse report api request not within rate limits!")
+            print("try again in a minute!")
+            return
+
+        # check if successful or not
+        if response.status_code == 200:
+            print("successful post to ipabusedb")
+        else:
+            print("error occured")
+    return
+
 
 
 def print_malware_bazaar_info(json_data, user_configs):
@@ -175,6 +243,13 @@ def print_abuse_conf_score(json_data, user_configs):
         print(']' + colored(zfill_score + '%', color=char_color))
 
 
+def unload_catagory_file():
+    catagory_dict = dict()
+    with open("report_categories.json", "r") as cat_file:
+        catagory_dict = json.load(cat_file)
+    return catagory_dict
+
+
 def print_report_data(json_data, user_configs):
     """ prints data about reports from the api """
 
@@ -214,6 +289,9 @@ def print_report_data(json_data, user_configs):
             comment = "".join(list_comment[:report_len])
             print(comment)
 
+    # unload catagory files for this section
+    catagory_dict = unload_catagory_file()
+
     # pritn information about ip report categories
     if user_configs["show"]["ipabusedb"]["reportCategories"]:
         reported_cata = set()
@@ -223,11 +301,10 @@ def print_report_data(json_data, user_configs):
                     reported_cata.add(catagory)
         print("")
         print("Recent reports keywords: ", end="")
-        with open("report_categories.json", "r") as cat_file:
-            catagory_dict = json.load(cat_file)
         for catagory in reported_cata:
             print(catagory_dict[str(catagory)][0] + ", ", end="")
 
+    # call the reporting
     print("\n")
 
 
@@ -429,12 +506,15 @@ def main():
 
     # ip abuse db 1000 req per day
     ip_abuse_rate_limiter = rate_limit(1000, 86400)
+    # ip abuse db report 1000 per day
+    ip_abuse_report_limiter = rate_limit(1000, 86400)
     # ip geoloc db is 45 req per min
     ip_geoloc_rate_limiter = rate_limit(45, 60)
 
     # load log from log.json file for rate limit context
     # malware bazaar is super chill so no rate limit needed
     ip_abuse_rate_limiter = load_rate_limit_file(ip_abuse_rate_limiter, "ip_abuse")
+    ip_abuse_report_limiter = load_rate_limit_file(ip_abuse_report_limiter, "ip_report")
     ip_geoloc_rate_limiter = load_rate_limit_file(ip_geoloc_rate_limiter, "ip_geoloc")
 
     loop_prompt = True
@@ -472,6 +552,7 @@ def main():
                 print("closing program")
                 print("writing to log files")
                 write_rate_limit_file(ip_abuse_rate_limiter, "ip_abuse")
+                write_rate_limit_file(ip_abuse_report_limiter, "ip_report")
                 write_rate_limit_file(ip_geoloc_rate_limiter, "ip_geoloc")
                 loop_prompt = False
                 # break
@@ -482,6 +563,8 @@ def main():
         elif is_acceptable_input:
             abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
             ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
+            if user_configs["show"]["ipabusedb"]["auto_reporting"]:
+                auto_reporting_ip_abuse(ip_address, user_configs, ip_abuse_report_limiter)
 
 
 if __name__ == "__main__":
