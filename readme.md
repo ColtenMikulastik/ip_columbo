@@ -54,6 +54,11 @@ ip_columbo is heavily relyant on API keys to these websites.
     - requests
     - json
 
+## Workflow
+just copy and paste the concerning ip address, domain name, or hash into the search.
+- Ip columbo will automattically search for the relevant information.
+- new feature, if you have determined the ip address to be malicous you can now automattically report through ip_columbo
+
 ## Features / Improvements / Bug-Fixes
 ***DO NOT PUSH PERSONAL API KEYS TO GIT REPO***
 #### Standard github procedures:

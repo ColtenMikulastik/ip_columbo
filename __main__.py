@@ -7,6 +7,27 @@ import socket
 import os
 
 
+def auto_reporting_ip_abuse(json_data, catagory_dict):
+
+    # auto reporting if the user wants it
+    print("please select the report category this ip is connected with.")
+    print("0 - to cancel without reporting, ")
+    cat_num = 1
+    while cat_num <= 23:
+        row = 0
+        while row <= 2:
+            if cat_num >= 24:
+                pass
+            else:
+                print(str(cat_num) + " - " + catagory_dict[str(cat_num)][0] + ", ", end="\t")
+            cat_num = cat_num + 1
+            row = row + 1
+        print()
+    report_cat = input("please type a number for the report catagory:")
+
+
+
+
 def print_malware_bazaar_info(json_data, user_configs):
     """ print the information from the malware bazaar api """
     print(json_data)
@@ -214,6 +235,11 @@ def print_report_data(json_data, user_configs):
             comment = "".join(list_comment[:report_len])
             print(comment)
 
+    # unload catagory files for this section
+    catagory_dict = dict()
+    with open("report_categories.json", "r") as cat_file:
+        catagory_dict = json.load(cat_file)
+
     # pritn information about ip report categories
     if user_configs["show"]["ipabusedb"]["reportCategories"]:
         reported_cata = set()
@@ -223,11 +249,12 @@ def print_report_data(json_data, user_configs):
                     reported_cata.add(catagory)
         print("")
         print("Recent reports keywords: ", end="")
-        with open("report_categories.json", "r") as cat_file:
-            catagory_dict = json.load(cat_file)
         for catagory in reported_cata:
             print(catagory_dict[str(catagory)][0] + ", ", end="")
 
+    # call the reporting
+    if user_configs["show"]["ipabusedb"]["auto_reporting"]:
+        auto_reporting_ip_abuse(json_data, catagory_dict)
     print("\n")
 
 
