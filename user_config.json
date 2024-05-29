@@ -20,7 +20,7 @@
 			"numDistinctUsers": true,
 			"lastReportedAt": true,
 			"reportCategories": true,
-			"auto_reporting": true
+			"auto_reporting": false
 		},
 		"ipgeoloc":
 		{
