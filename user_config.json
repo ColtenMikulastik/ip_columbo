@@ -53,6 +53,7 @@
 			"ole_info": true,
 			"vendor_intel": true,
 			"comments": true,
+			"vendor_intel": true,
 			"verbose_info": true
 		}
 
