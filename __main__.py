@@ -8,6 +8,22 @@ import socket
 import os
 
 
+def print_vendor_intel(json_data):
+    """ Prints the aggrigated vendor intel from malware bazar api """
+    # print(json_data["data"][0]["vendor_intel"])
+
+    vendors = list(json_data["data"][0]["vendor_intel"].keys())
+
+    for vendor in vendors:
+        print(vendor + " reports: ")
+        type(json_data["data"][0]["vendor_intel"][vendor])
+        if type(json_data["data"][0]["vendor_intel"][vendor]) is dict:
+            for key, value in json_data["data"][0]["vendor_intel"][vendor].items():
+                print("\t" + str(key) + ": " + str(value))
+        else:
+            print( "test" )
+
+
 def auto_reporting_ip_abuse(ip_address, user_configs, ip_abuse_report_limiter):
     """ reports user to ipabusedb via api"""
 
@@ -158,6 +174,10 @@ def print_malware_bazaar_info(json_data, user_configs):
             print(json_data["data"][0]["comments"])
         else:
             print("no comment information...")
+
+    # Call Vendor Intel function
+    if user_configs["show"]["malware_bazaar"]["vendor_intel"]:
+        print_vendor_intel(json_data)
 
 
 

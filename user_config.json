@@ -20,7 +20,7 @@
 			"numDistinctUsers": true,
 			"lastReportedAt": true,
 			"reportCategories": true,
-			"auto_reporting": true
+			"auto_reporting": false
 		},
 		"ipgeoloc":
 		{
@@ -53,6 +53,7 @@
 			"ole_info": true,
 			"vendor_intel": true,
 			"comments": true,
+			"vendor_intel": true,
 			"verbose_info": true
 		}
 
