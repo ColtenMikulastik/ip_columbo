@@ -11,13 +11,17 @@ import os
 def print_vendor_intel(json_data):
     """ Prints the aggrigated vendor intel from malware bazar api """
     # print(json_data["data"][0]["vendor_intel"])
-    vendors = ["CERT-PL_MWDB", "YOROI_YOMI", "vxCube", "Intezer", "InQuest", "Triage",
-               "ReversingLabs", "Spamhaus_HBL", "FileScan-IO"]
-    
-    for vendor in vendors:
-        print(vendor)
-        print(json_data["data"][0]["vendor_intel"][vendor])
 
+    vendors = list(json_data["data"][0]["vendor_intel"].keys())
+
+    for vendor in vendors:
+        print(vendor + " reports: ")
+        type(json_data["data"][0]["vendor_intel"][vendor])
+        if type(json_data["data"][0]["vendor_intel"][vendor]) is dict:
+            for key, value in json_data["data"][0]["vendor_intel"][vendor].items():
+                print("\t" + str(key) + ": " + str(value))
+        else:
+            print( "test" )
 
 
 def auto_reporting_ip_abuse(ip_address, user_configs, ip_abuse_report_limiter):
