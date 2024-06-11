@@ -15,13 +15,15 @@ def print_vendor_intel(json_data):
     vendors = list(json_data["data"][0]["vendor_intel"].keys())
 
     for vendor in vendors:
+        # loop through the vendors in the json
         print(vendor + " reports: ")
         type(json_data["data"][0]["vendor_intel"][vendor])
+        # print the ouput if supported
         if type(json_data["data"][0]["vendor_intel"][vendor]) is dict:
             for key, value in json_data["data"][0]["vendor_intel"][vendor].items():
                 print("\t" + str(key) + ": " + str(value))
         else:
-            print( "test" )
+            print("Vendor output not supported currently")
 
 
 def auto_reporting_ip_abuse(ip_address, user_configs, ip_abuse_report_limiter):
