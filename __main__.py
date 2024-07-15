@@ -8,6 +8,17 @@ import socket
 import os
 
 
+def defang(input):
+    """ adds parenthesis to an ip to make it non-clickable """
+    # first I need to split the input string on "."
+    # prob going to need execpt here for ipv6
+    input_list = input.split('.')
+    input_list[-2] = input_list[-2] + '('
+    input_list[-1] = ')' + input_list[-1]
+    output = '.'.join(input_list)
+    return output
+
+
 def print_vendor_intel(json_data):
     """ Prints the aggrigated vendor intel from malware bazar api """
     # print(json_data["data"][0]["vendor_intel"])
@@ -201,7 +212,7 @@ def print_ip_information(json_data, user_configs):
     # print ip info based on the user configs
     print("ip information: ", end="")
     if user_configs["show"]["ipabusedb"]["ipAddress"]:
-        print(json_data["data"]["ipAddress"] + ", ", end="")
+        print(defang(json_data["data"]["ipAddress"]) + ", ", end="")
     if user_configs["show"]["ipabusedb"]["isPublic"]:
         if json_data["data"]["isPublic"]:
             print("Public, ", end="")
