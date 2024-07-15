@@ -245,11 +245,11 @@ def print_domain_information(json_data, user_configs):
     if user_configs["show"]["ipabusedb"]["isp"]:
         print("\tISP: " + str(json_data["data"]["isp"]))
     if user_configs["show"]["ipabusedb"]["domain"]:
-        print("\tDomain: " + str(json_data["data"]["domain"]))
+        print("\tDomain: " + defang(str(json_data["data"]["domain"])))
     if user_configs["show"]["ipabusedb"]["hostnames"]:
         print("\tHostnames: ", end='')
         for hostname in json_data["data"]["hostnames"]:
-            print(hostname + ", ")
+            print(defang(hostname) + ", ")
     print('\n')
 
 
