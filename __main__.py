@@ -15,6 +15,13 @@ def defang(input):
     """ adds parenthesis to an ip to make it non-clickable """
     # first I need to split the input string on "."
     # prob going to need execpt here for ipv6
+    if ':' in input:
+        input_list = input.split(':')
+        input_list[-2] = input_list[-2] + '('
+        input_list[-1] = ')' + input_list[-1]
+        output = ':'.join(input_list)
+        return output
+
     if input != "None":
         input_list = input.split('.')
         input_list[-2] = input_list[-2] + '('
