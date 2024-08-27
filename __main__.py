@@ -6,17 +6,30 @@ import requests
 import json
 import socket
 import os
+import ipaddress
+
+from requests.utils import is_ipv4_address
 
 
 def defang(input):
     """ adds parenthesis to an ip to make it non-clickable """
     # first I need to split the input string on "."
     # prob going to need execpt here for ipv6
-    input_list = input.split('.')
-    input_list[-2] = input_list[-2] + '('
-    input_list[-1] = ')' + input_list[-1]
-    output = '.'.join(input_list)
-    return output
+    if ':' in input:
+        input_list = input.split(':')
+        input_list[-2] = input_list[-2] + '('
+        input_list[-1] = ')' + input_list[-1]
+        output = ':'.join(input_list)
+        return output
+
+    if input != "None":
+        input_list = input.split('.')
+        input_list[-2] = input_list[-2] + '('
+        input_list[-1] = ')' + input_list[-1]
+        output = '.'.join(input_list)
+        return output
+    else:
+        return input
 
 
 def print_vendor_intel(json_data):
@@ -559,20 +572,24 @@ def main():
         # print the options for the prompt
         print("- enter 'q' to quit")
 
-        ip_address = input("ip: ")
+        input_ip_address = input("ip: ")
         # verify that the inputed data is correct using socket
         is_acceptable_input = False
 
+        # first try ipv4
         try:
-            socket.inet_aton(ip_address)
+            if ipaddress.ip_address(input_ip_address) is ipaddress.IPv4Address:
+                print("ipv4")
+            else:
+                print("ipv6")
             # continue to API call if ip is valid
             print("ip address detected...")
             is_acceptable_input = True
-        except socket.error:
+        except ValueError:
             print("ip address not detected...")
             pass
         try:
-            ip_address = socket.gethostbyname(ip_address)
+            input_ip_address = socket.gethostbyname(input_ip_address)
             print("domain name detected")
             is_acceptable_input = True
         except UnicodeError:
@@ -581,7 +598,7 @@ def main():
         except socket.gaierror:
             print("domain name not detected")
             # not ip address, soooo other thing
-            if ip_address == 'q':
+            if input_ip_address == 'q':
                 print("closing program")
                 print("writing to log files")
                 write_rate_limit_file(ip_abuse_rate_limiter, "ip_abuse")
@@ -590,14 +607,14 @@ def main():
                 loop_prompt = False
                 # break
         # check if it's a hash
-        if check_for_hash(ip_address):
+        if check_for_hash(input_ip_address):
             # send to malware bazaar api
-            malware_bazaar_api_call(ip_address, user_configs)
+            malware_bazaar_api_call(input_ip_address, user_configs)
         elif is_acceptable_input:
-            abuseIPDB_API_Call(ip_address, user_configs, ip_abuse_rate_limiter)
-            ip_geo_api_call(ip_address, user_configs, ip_geoloc_rate_limiter)
+            abuseIPDB_API_Call(input_ip_address, user_configs, ip_abuse_rate_limiter)
+            ip_geo_api_call(input_ip_address, user_configs, ip_geoloc_rate_limiter)
             if user_configs["show"]["ipabusedb"]["auto_reporting"]:
-                auto_reporting_ip_abuse(ip_address, user_configs, ip_abuse_report_limiter)
+                auto_reporting_ip_abuse(input_ip_address, user_configs, ip_abuse_report_limiter)
 
 
 if __name__ == "__main__":
